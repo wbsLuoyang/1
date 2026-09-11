@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Hub · 模型聚合台</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>">
+</head>
+<body>
+<div class="app">
+
+  <!-- ============ 侧栏 ============ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-logo">H</div>
+      <div class="brand-text">
+        <strong>AI Hub</strong>
+        <span id="brandSub">正在载入…</span>
+      </div>
+      <button class="icon-btn collapse-btn" id="collapseBtn" title="收起侧栏">
+        <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+      </button>
+    </div>
+
+    <button class="new-btn" id="newChatBtn">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      新对话
+    </button>
+
+    <div class="conv-section">
+      <div class="conv-head">对话记录</div>
+      <div class="conv-list" id="convList"></div>
+    </div>
+
+    <div class="sidebar-foot">
+      <button class="foot-btn" id="refreshBtn" title="重新拉取所有端点的模型列表">
+        <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 3v6h-6"/></svg>
+        刷新模型
+      </button>
+      <button class="foot-btn" id="themeBtn">
+        <svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>
+        <span id="themeLabel">深色</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ============ 主区 ============ -->
+  <main class="main">
+    <header class="topbar">
+      <div class="picker-wrap">
+        <button class="model-trigger" id="modelTrigger">
+          <span class="dot" id="triggerDot"></span>
+          <span class="model-trigger-label" id="modelLabel">选择模型</span>
+          <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+
+        <div class="picker-panel" id="pickerPanel" hidden>
+          <div class="picker-top">
+            <input type="text" id="modelSearch" placeholder="搜索模型 / 端点…" autocomplete="off">
+            <label class="mini-check">
+              <input type="checkbox" id="chatOnly" checked>
+              仅对话模型
+            </label>
+          </div>
+          <div class="picker-list" id="pickerList"></div>
+          <div class="picker-foot">
+            <span id="pickerHint">可多选，选中多个即开启对比模式</span>
+            <button class="text-btn" id="clearSel">清空</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <button class="chip-btn" id="compareChip" hidden>
+          <svg viewBox="0 0 24 24"><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg>
+          <span id="compareChipText">对比 0</span>
+        </button>
+        <button class="chip-btn" id="paramBtn">
+          <svg viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
+          参数
+        </button>
+        <button class="chip-btn" id="exportBtn" title="导出当前对话为 Markdown">
+          <svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+          导出
+        </button>
+      </div>
+
+      <!-- 参数面板 -->
+      <div class="param-pop" id="paramPop" hidden>
+        <div class="param-row">
+          <label>系统提示词</label>
+          <textarea id="pSystem" rows="3" placeholder="留空则不发送 system 消息"></textarea>
+        </div>
+        <div class="param-grid">
+          <div class="param-row">
+            <label>Temperature <b id="vTemp">0.7</b></label>
+            <input type="range" id="pTemp" min="0" max="2" step="0.1" value="0.7">
+          </div>
+          <div class="param-row">
+            <label>最大输出 tokens</label>
+            <input type="number" id="pMax" placeholder="默认" min="1" max="200000">
+          </div>
+        </div>
+        <label class="mini-check wide">
+          <input type="checkbox" id="pStream" checked>
+          流式输出（实时逐字显示）
+        </label>
+      </div>
+    </header>
+
+    <div class="chat-scroll" id="chatScroll">
+      <div class="chat-inner" id="chatInner"></div>
+    </div>
+
+    <div class="composer">
+      <div class="composer-box">
+        <textarea id="input" rows="1" placeholder="输入消息，Enter 发送 / Shift+Enter 换行"></textarea>
+        <button class="send-btn" id="sendBtn" title="发送">
+          <svg viewBox="0 0 24 24"><path d="M4 12l16-8-6 8 6 8z"/></svg>
+        </button>
+        <button class="stop-btn" id="stopBtn" hidden title="停止生成">
+          <svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+        </button>
+      </div>
+      <div class="composer-foot">
+        <span id="statusLine">就绪</span>
+        <span class="kbd-hint">Enter 发送 · Shift+Enter 换行</span>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- 访问密码 -->
+<div class="login-gate" id="loginGate" hidden>
+  <div class="login-card">
+    <div class="login-logo">H</div>
+    <h2>需要访问密码</h2>
+    <p>这个 AI Hub 开启了访问保护，输入密码后继续。</p>
+    <div class="login-row">
+      <input type="password" id="loginPw" placeholder="访问密码" autocomplete="current-password">
+      <button id="loginBtn">进入</button>
+    </div>
+    <div class="login-err" id="loginErr"></div>
+    <div class="login-tip">密码在服务端 <code>config.json</code> 的 <code>auth.password</code></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

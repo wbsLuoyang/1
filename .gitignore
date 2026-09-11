@@ -1,0 +1,21 @@
+# 密钥配置 —— 绝对不要提交
+config.json
+
+# 运行时产物
+models.cache.json
+server.log
+
+# 测试产物
+.edge-profile/
+.edge-sniff/
+shots/
+ui.log
+scan.log
+
+# 依赖（本项目零依赖，以防万一）
+node_modules/
+npm-debug.log*
+
+# 系统
+.DS_Store
+Thumbs.db

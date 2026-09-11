@@ -1,0 +1,171 @@
+{
+  "scannedAt": "2026-09-11T10:57:10.138Z",
+  "providers": {
+    "labapi": {
+      "reachable": true,
+      "base": "https://api.labapi.work/v1",
+      "chat_ok": [
+        "claude-fable-5",
+        "claude-opus-4-6",
+        "claude-opus-4-7",
+        "claude-opus-4-8",
+        "claude-opus-5",
+        "claude-sonnet-4-6",
+        "deepseek-v4-flash",
+        "deepseek-v4-pro",
+        "gemini-2.5-flash",
+        "gemini-3-flash",
+        "gemini-3.1-pro-preview",
+        "gemini-3.5-flash",
+        "gemini-3.6-flash",
+        "gemini-3.7-flash",
+        "glm-5.3",
+        "glm-5.3-flash",
+        "gpt-5.3-codex-spark",
+        "gpt-5.5",
+        "gpt-5.6-luna",
+        "gpt-5.6-sol",
+        "gpt-5.6-terra",
+        "gpt-6-astra",
+        "grok-4.5",
+        "grok-4.6",
+        "lab-latest",
+        "lab-s1",
+        "lab-s1-mini",
+        "lab-s1-pro",
+        "lab-s2-preview",
+        "lab-s2-preview-35b",
+        "lab-s2-preview-397b",
+        "lab-vl3.5-241b-a28b",
+        "lab-vl3.5-latest",
+        "minimax-m3",
+        "qwen3.8-max"
+      ],
+      "chat_fail": [
+        {
+          "id": "glm-5.2",
+          "note": "ERR: TIMEOUT"
+        },
+        {
+          "id": "kimi-k3",
+          "note": "ERR: TIMEOUT"
+        }
+      ],
+      "non_chat": [
+        "gpt-image-2.5-sunburst",
+        "gpt-image-2.5-flare",
+        "gpt-image-2"
+      ],
+      "all": [
+        "minimax-m3",
+        "grok-4.6",
+        "gpt-5.3-codex-spark",
+        "claude-opus-5",
+        "gemini-3.5-flash",
+        "kimi-k3",
+        "lab-s2-preview-397b",
+        "gpt-6-astra",
+        "glm-5.3-flash",
+        "claude-opus-4-8",
+        "gemini-2.5-flash",
+        "gemini-3.1-pro-preview",
+        "qwen3.8-max",
+        "lab-s1-pro",
+        "gpt-image-2.5-sunburst",
+        "claude-fable-5",
+        "lab-s2-preview",
+        "lab-vl3.5-latest",
+        "lab-s1-mini",
+        "glm-5.2",
+        "gemini-3-flash",
+        "claude-opus-4-7",
+        "claude-sonnet-4-6",
+        "glm-5.3",
+        "lab-latest",
+        "claude-opus-4-6",
+        "grok-4.5",
+        "deepseek-v4-pro",
+        "gpt-image-2.5-flare",
+        "gpt-5.5",
+        "lab-vl3.5-241b-a28b",
+        "gemini-3.6-flash",
+        "gpt-image-2",
+        "gemini-3.7-flash",
+        "lab-s2-preview-35b",
+        "gpt-5.6-terra",
+        "lab-s1",
+        "gpt-5.6-luna",
+        "deepseek-v4-flash",
+        "gpt-5.6-sol"
+      ],
+      "stream": {
+        "model": "claude-fable-5",
+        "status": 200,
+        "sse_lines": 22,
+        "hasDone": true,
+        "ms": 7409
+      }
+    },
+    "mimo": {
+      "reachable": true,
+      "base": "https://api.xiaomimimo.com/v1",
+      "chat_ok": [
+        "mimo-v2.5",
+        "mimo-v2.5-pro"
+      ],
+      "chat_fail": [],
+      "non_chat": [
+        "mimo-v2.5-asr",
+        "mimo-v2.5-tts",
+        "mimo-v2.5-tts-voiceclone",
+        "mimo-v2.5-tts-voicedesign"
+      ],
+      "all": [
+        "mimo-v2.5",
+        "mimo-v2.5-asr",
+        "mimo-v2.5-pro",
+        "mimo-v2.5-tts",
+        "mimo-v2.5-tts-voiceclone",
+        "mimo-v2.5-tts-voicedesign"
+      ],
+      "stream": {
+        "model": "mimo-v2.5",
+        "status": 200,
+        "sse_lines": 21,
+        "hasDone": true,
+        "ms": 2695
+      }
+    },
+    "relay": {
+      "reachable": true,
+      "base": "https://according-conditions-self-prospects.trycloudflare.com/v1",
+      "chat_ok": [
+        "deepseek-v4-flash",
+        "deepseek-v4-flash-max32000",
+        "qwen-3.8-flash",
+        "sensenova-6.8-flash-lite"
+      ],
+      "chat_fail": [
+        {
+          "id": "step-3.7-flash",
+          "note": "{\"error\":{\"message\":\"you have no active step plan subscription\",\"type\":\"request_params_invalid\"}}"
+        }
+      ],
+      "non_chat": [],
+      "all": [
+        "deepseek-v4-flash",
+        "deepseek-v4-flash-max32000",
+        "qwen-3.8-flash",
+        "sensenova-6.8-flash-lite",
+        "step-3.7-flash"
+      ],
+      "stream": {
+        "model": "deepseek-v4-flash",
+        "status": 200,
+        "sse_lines": 51,
+        "hasDone": true,
+        "ms": 3354
+      }
+    }
+  }
+}

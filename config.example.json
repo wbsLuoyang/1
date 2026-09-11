@@ -1,0 +1,27 @@
+{
+  "_说明": "这是模板。复制成 config.json 再填入真实密钥。config.json 已被 .gitignore 排除，不会进版本库。",
+  "server": {
+    "port": 8899,
+    "host": "127.0.0.1",
+    "_host说明": "想在手机/平板上访问就改成 0.0.0.0（同一 WiFi 下用电脑内网 IP 打开）；托管到云平台时会被 PORT 环境变量自动覆盖为 0.0.0.0，不用改这里"
+  },
+  "auth": {
+    "enabled": true,
+    "password": "改成你自己的密码",
+    "_说明": "访问密码。只要这个地址可能被别人访问到，就必须设置。云部署时可用环境变量 AIHUB_AUTH_PASSWORD 注入，避免写进文件"
+  },
+  "gateway": {
+    "enabled": true,
+    "apiKey": "改成你自己的网关密钥",
+    "_说明": "/v1/chat/completions 的调用密钥，可用环境变量 AIHUB_GATEWAY_KEY 注入"
+  },
+  "providers": [
+    {
+      "id": "labapi",
+      "name": "LabAPI",
+      "base": "https://api.labapi.work/v1",
+      "key": "sk-你的密钥",
+      "enabled": true
+    }
+  ]
+}
