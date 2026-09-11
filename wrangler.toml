@@ -1,0 +1,16 @@
+name = "luoy-ai"
+main = "workers/index.js"
+compatibility_date = "2026-09-01"
+
+# 环境变量请在 Cloudflare 控制台配置（Settings → Variables and Secrets）：
+#   PROVIDERS_JSON   端点配置，JSON 数组
+#   GATEWAY_KEY      调用密钥
+#
+# 也可以用命令行：
+#   npx wrangler secret put GATEWAY_KEY
+#   npx wrangler secret put PROVIDERS_JSON
+#
+# 本地调试：
+#   npx wrangler dev
+# 部署：
+#   npx wrangler deploy
