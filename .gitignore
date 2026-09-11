@@ -5,9 +5,8 @@ config.json
 models.cache.json
 server.log
 
-# 测试产物
-.edge-profile/
-.edge-sniff/
+# 测试产物（浏览器临时 profile 用通配，避免每次新增一个就漏一个）
+.edge-*/
 shots/
 ui.log
 scan.log
