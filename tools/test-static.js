@@ -97,10 +97,24 @@ async function shot(name) {
   await send('Runtime.enable');
 
   console.log('\n  站点: ' + SITE);
+
+  // 等导航真正提交完成 —— 线上首次加载较慢，文档未提交时访问 localStorage 会抛 SecurityError
+  console.log('[0] 等待页面导航完成');
+  let href = '';
+  for (let i = 0; i < 60; i++) {
+    href = (await evaluate('location.href').catch(() => '')) || '';
+    const ready = (await evaluate('document.readyState').catch(() => '')) || '';
+    if (href.indexOf('http') === 0 && href.indexOf('blank') < 0 && ready === 'complete') break;
+    await sleep(500);
+  }
+  console.log('   当前页面: ' + href);
+  if (href.indexOf('blank') >= 0 || !href) throw new Error('页面始终没有导航成功，检查站点是否可访问');
+  await sleep(1500);
+
   console.log('[1] 清空本地状态并重载');
-  await evaluate('localStorage.clear()');
+  await evaluate('try { localStorage.clear(); } catch (e) {}');
   await send('Page.reload', { ignoreCache: true });
-  await sleep(3500);
+  await sleep(4000);
 
   console.log('[2] 检查密钥配置门');
   const gate = await evaluate(`(() => {
