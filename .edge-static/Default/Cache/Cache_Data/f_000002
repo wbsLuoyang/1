@@ -1,0 +1,402 @@
+G MISSING F MISSING E MISSING D MISSING C MISSING B2 MISSING B1 MISSING A$=True <!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>绘梨衣集群控制台</title>
+<style>
+:root{
+  --ink:#5b4a78; --ink-soft:#8a7aa8; --ink-faint:#b3a6c9;
+  --purple:#8b5cf6; --purple-deep:#6d28d9; --pink:#ec4899; --pink-soft:#f9a8d4;
+  --bg-a:#fdf6fc; --bg-b:#f4ecff;
+  --glass:rgba(255,255,255,.55); --glass-border:rgba(255,255,255,.75);
+  --ok:#10b981; --warn:#f59e0b; --bad:#ef4444;
+  --shadow:0 10px 30px rgba(139,92,246,.10), 0 2px 8px rgba(139,92,246,.06);
+  --r:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  color:var(--ink);
+  background:linear-gradient(135deg,var(--bg-a),var(--bg-b));
+  min-height:100vh;overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+/* 流动光斑背景 */
+.blob{position:fixed;border-radius:50%;filter:blur(90px);opacity:.55;z-index:0;pointer-events:none;animation:drift 18s ease-in-out infinite}
+.blob.b1{width:420px;height:420px;background:#f9d5f0;top:-120px;left:-80px}
+.blob.b2{width:380px;height:380px;background:#dcd2fb;bottom:-120px;right:-60px;animation-delay:-6s}
+.blob.b3{width:300px;height:300px;background:#ffe3f0;top:40%;right:20%;animation-delay:-12s}
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-30px) scale(1.06)}66%{transform:translate(-30px,24px) scale(.96)}}
+.wrap{position:relative;z-index:1;max-width:1160px;margin:0 auto;padding:28px 20px 60px}
+/* 顶栏 */
+header{display:flex;align-items:center;gap:16px;margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--purple),var(--pink));display:grid;place-items:center;box-shadow:0 8px 20px rgba(139,92,246,.35)}
+.brand .logo svg{width:24px;height:24px}
+.brand h1{font-size:20px;font-weight:700;letter-spacing:.5px}
+.brand .sub{font-size:12px;color:var(--ink-soft);margin-top:2px}
+.spacer{flex:1}
+.btn-icon{width:40px;height:40px;border-radius:12px;border:1px solid var(--glass-border);background:var(--glass);backdrop-filter:blur(16px);color:var(--ink-soft);cursor:pointer;display:grid;place-items:center;transition:.2s}
+.btn-icon:hover{color:var(--purple);transform:translateY(-2px);box-shadow:var(--shadow)}
+.btn-icon svg{width:19px;height:19px}
+/* 导航 */
+nav{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap;background:var(--glass);backdrop-filter:blur(18px);border:1px solid var(--glass-border);border-radius:16px;padding:6px;width:max-content;box-shadow:var(--shadow)}
+nav .tab{border:none;background:transparent;color:var(--ink-soft);padding:9px 18px;border-radius:11px;cursor:pointer;font-size:14px;transition:.22s;display:flex;align-items:center;gap:8px}
+nav .tab svg{width:16px;height:16px;opacity:.7}
+nav .tab:hover{color:var(--ink)}
+nav .tab.active{background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;box-shadow:0 6px 16px rgba(139,92,246,.35)}
+.panel{display:none;animation:fade .35s ease}
+.panel.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.glass{padding:20px;border-radius:var(--r);background:var(--glass);border:1px solid var(--glass-border);backdrop-filter:blur(18px);box-shadow:var(--shadow)}
+.card-h{display:flex;align-items:center;gap:10px;margin-bottom:16px;font-size:16px;font-weight:600}
+.card-h svg{width:20px;height:20px;color:var(--purple)}
+.card-h .right{margin-left:auto;display:flex;gap:8px;align-items:center}
+/* 按钮 */
+.btn{display:inline-flex;align-items:center;gap:7px;border:none;cursor:pointer;border-radius:12px;padding:9px 16px;font-size:13px;font-weight:600;transition:.2s}
+.btn svg{width:15px;height:15px}
+.btn.primary{background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;box-shadow:0 6px 14px rgba(139,92,246,.3)}
+.btn.primary:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(139,92,246,.4)}
+.btn.ghost{background:rgba(255,255,255,.6);color:var(--ink-soft);border:1px solid var(--glass-border)}
+.btn.ghost:hover{color:var(--purple);background:#fff}
+.btn.sm{padding:6px 11px;font-size:12px;border-radius:9px}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none!important}
+/* 服务器区 */
+.server{margin-bottom:24px}
+.server-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.server-head .name{font-size:16px;font-weight:700}
+.pill{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600}
+.pill.ok{background:rgba(16,185,129,.14);color:var(--ok)}
+.pill.warn{background:rgba(245,158,11,.16);color:var(--warn)}
+.pill.bad{background:rgba(239,68,68,.14);color:var(--bad)}
+.pill.flat{background:rgba(139,92,246,.12);color:var(--purple)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.chip{display:flex;align-items:center;gap:7px;background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;padding:7px 13px;font-size:12px;color:var(--ink-soft);backdrop-filter:blur(10px)}
+.chip b{color:var(--ink);font-size:13px}
+.chip svg{width:15px;height:15px}
+/* 告警条 */
+.alertbanner{margin-bottom:14px;padding:12px 16px;border-radius:14px;display:flex;align-items:center;gap:10px;font-size:13px}
+.alertbanner svg{width:17px;height:17px;flex:none}
+.alertbanner.warn{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:#b45309}
+.alertbanner.bad{background:rgba(239,68,68,.10);border:1px solid rgba(239,68,68,.28);color:#b91c1c}
+.alertbanner .btns{margin-left:auto;display:flex;gap:8px}
+/* 角色卡片网格 */
+.roles{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:14px}
+.rcard{position:relative;padding:16px;border-radius:18px;background:var(--glass);border:1px solid var(--glass-border);backdrop-filter:blur(18px);box-shadow:var(--shadow);transition:.25s;overflow:hidden}
+.rcard:hover{transform:translateY(-4px);box-shadow:0 16px 34px rgba(139,92,246,.16)}
+.rcard::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,var(--purple),var(--pink));opacity:0;transition:.25s}
+.rcard:hover::before{opacity:1}
+.rcard.focus ::before{opacity:1}
+.rcard .top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.dot{width:10px;height:10px;border-radius:50%;flex:none;box-shadow:0 0 0 4px rgba(0,0,0,.04)}
+.dot.ok{background:var(--ok)} .dot.warn{background:var(--warn)} .dot.bad{background:var(--bad)} .dot.off{background:#cbd5e1}
+.rcard .nm{font-size:15px;font-weight:700}
+.rcard .meta{font-size:11px;color:var(--ink-faint);margin-top:2px;letter-spacing:.3px}
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.badge{font-size:11px;padding:3px 8px;border-radius:8px;font-weight:600}
+.badge.warn{background:rgba(245,158,11,.15);color:#b45309}
+.badge.bad{background:rgba(239,68,68,.13);color:#b91c1c}
+.badge.dim{background:rgba(139,92,246,.10);color:var(--purple)}
+.badge.ok{background:rgba(16,185,129,.14);color:var(--ok)}
+.sm-select{width:190px;flex:none}
+.quota{margin-bottom:14px}
+.qrow{display:flex;align-items:center;gap:10px;padding:8px 4px;border-bottom:1px solid rgba(139,92,246,.10);flex-wrap:wrap}
+.qrow:last-child{border-bottom:none}
+.qname{min-width:110px;font-weight:600;font-size:13px}
+.qstat{flex:1;font-size:12px;color:var(--ink-soft)}
+.qstat b{color:var(--purple);font-size:13px}
+.qin{width:96px;flex:none;padding:6px 10px}
+.rcard .acts{display:flex;gap:8px}
+.rcard .acts .btn{flex:1;justify-content:center}
+.rcard .act-open{background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff}
+/* 日志 */
+.logbox{background:rgba(255,255,255,.7);border:1px solid var(--glass-border);border-radius:14px;padding:14px;font-size:12px;line-height:1.7;color:#6b5b8c;white-space:pre-wrap;max-height:60vh;overflow:auto;font-family:ui-monospace,Consolas,monospace}
+/* 表单 */
+label{display:block;font-size:12px;color:var(--ink-soft);margin:12px 0 5px}
+input,textarea,select{width:100%;background:rgba(255,255,255,.7);border:1px solid var(--glass-border);color:var(--ink);border-radius:12px;padding:10px 13px;font-size:14px;font-family:inherit;transition:.2s}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(139,92,246,.16);background:#fff}
+textarea{min-height:110px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.msg{margin-top:12px;padding:11px 13px;border-radius:12px;font-size:13px;display:none;line-height:1.6}
+.msg.ok{display:block;background:rgba(16,185,129,.12);color:#047857}
+.msg.err{display:block;background:rgba(239,68,68,.10);color:#b91c1c}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid rgba(139,92,246,.10)}
+th{color:var(--ink-soft);font-weight:600;font-size:12px}
+.mono{font-family:ui-monospace,Consolas,monospace}
+.qr{max-width:210px;border-radius:14px;background:#fff;padding:8px}
+.grid-qr{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;margin-top:10px}
+.qr-card{text-align:center}
+.qr-card .nm{font-size:13px;margin-bottom:8px;font-weight:600}
+.sub{color:var(--ink-soft);font-size:13px}
+/* 加载 */
+.skeleton{display:flex;flex-direction:column;gap:12px}
+.sk{height:20px;border-radius:10px;background:linear-gradient(90deg,rgba(139,92,246,.08),rgba(236,72,153,.10),rgba(139,92,246,.08));background-size:200% 100%;animation:shimmer 1.4s infinite}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-thumb{background:#d9cdf0;border-radius:9px}
+@media(max-width:640px){.row{grid-template-columns:1fr}nav{width:100%}}
+</style>
+</head>
+<body>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 4v5c0 4.4-3 7.7-7 9-4-1.3-7-4.6-7-9V7z"/><path d="M9 12l2 2 4-4"/></svg>
+      </div>
+      <div>
+        <h1>绘梨衣集群控制台</h1>
+        <div class="sub">角色状态 · 一键面板 · 引擎管理</div>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn-icon" id="global-refresh" title="刷新状态">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>
+    </button>
+  </header>
+
+  <nav>
+    <button class="tab active" data-t="dash"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/></svg>状态看板</button>
+    <button class="tab" data-t="create"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>新建智能体</button>
+    <button class="tab" data-t="pass"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>密码清单</button>
+    <button class="tab" data-t="qr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM21 14v6M14 21h4"/></svg>二维码</button>
+  </nav>
+
+  <!-- 状态看板 -->
+  <div class="panel active" id="p-dash">
+    <div id="dash-body"><div class="skeleton"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div></div>
+  </div>
+
+  <!-- 新建智能体 -->
+  <div class="panel" id="p-create">
+    <div class="glass">
+      <div class="card-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>新建智能体<small class="sub" style="font-weight:400">选服务器填信息，创建并部署到远端</small></div>
+      <label>目标服务器 *</label><select id="c-server"></select>
+      <div class="row">
+        <div><label>角色名 *</label><input id="c-name" placeholder="如 绘梨衣七号"></div>
+        <div><label>QQ 号 *</label><input id="c-qq" placeholder="如 1234567890"></div>
+        <div><label>QQ 密码（快速登录，可空）</label><input id="c-pass" type="password" placeholder="账号密码"></div>
+        <div><label>所属人 QQ（主人）</label><input id="c-owner" placeholder="如 3446288260"></div>
+        <div><label>端口（留空自动分配）</label><input id="c-port" placeholder="如 3024"></div>
+        <div><label>模型</label><input id="c-model" value="mimo-v2.5"></div>
+      </div>
+      <label>LLM API Key（留空用集群默认）</label><input id="c-llm" type="password" placeholder="sk-...">
+      <label>音色 voice_id（留空用默认）</label><input id="c-voice" placeholder="cosyvoice-...">
+      <label>人设（性格/背景/说话风格）</label><textarea id="c-persona" placeholder="例如：你是某某，性格温柔，喜欢……"></textarea>
+      <button class="btn primary" id="btn-create">创建并部署</button>
+      <div class="msg" id="create-msg"></div>
+    </div>
+  </div>
+
+  <!-- 密码清单 -->
+  <div class="panel" id="p-pass">
+    <div class="glass">
+      <div class="card-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>角色面板密码
+        <div class="right"><button class="btn ghost sm" id="btn-pass">查询</button></div></div>
+      <div id="pass-body" class="sub">点击「查询」加载</div>
+    </div>
+  </div>
+
+  <!-- 二维码 -->
+  <div class="panel" id="p-qr">
+    <div class="glass">
+      <div class="card-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM21 14v6M14 21h4"/></svg>扫码登录
+        <div class="right"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <select id="qr-server" class="sm-select"></select>
+          <select id="qr-role" class="sm-select"></select>
+          <button class="btn primary sm" id="btn-loadqr">获取二维码</button>
+        </div></div></div>
+      <div id="qr-body" class="sub">先选服务器，再选角色，点「获取二维码」</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const IC = { refresh:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>' };
+let SERVERS=[], PANELS={};
+async function api(p,o){const r=await fetch(p,o);return r.json();}
+document.querySelectorAll('nav .tab').forEach(t=>{t.onclick=()=>{document.querySelectorAll('nav .tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));t.classList.add('active');document.getElementById('p-'+t.dataset.t).classList.add('active');};});
+
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function cat(r){
+  if(r&&r.dup) return 'dup';
+  const on=r&&r.realOnline;
+  if(on===true) return 'online';
+  if(on===false) return (r.nodeConns>0&&r.engineCount>0)?'kicked':'down';
+  if(r&&r.engineCount>0 && !r.engineOffline) return 'online';
+  if(r&&r.engineOffline && r.engineCount>0) return 'kicked';
+  return 'down';
+}
+function stateOf(r){const c=cat(r);return {online:{cls:'ok',txt:'在线'},kicked:{cls:'warn',txt:'账号未登录'},down:{cls:'off',txt:'引擎未运行'},dup:{cls:'bad',txt:'重复引擎'}}[c];}
+
+async function loadPanels(){ try{PANELS=(await api('/api/panels')).servers||{};}catch(e){PANELS={};} }
+function panelOf(key,name){const p=(PANELS[key]||{});return p.url?`${p.url}/${encodeURIComponent(name)}`:'';}
+
+// ---------- 看板 ----------
+async function loadDash(){
+  const box=document.getElementById('dash-body');
+  box.innerHTML='<div class="skeleton"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div>';
+  const j=await api('/api/status');
+  if(!j||!j.servers){box.innerHTML='<div class="alertbanner bad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>控制台后端无响应，请确认已用 start.bat 启动。</div>';return;}
+  let html='';
+  for(const s of j.servers){
+    if(!s.ok){html+=`<div class="server"><div class="server-head"><span class="name">${esc(s.name)}</span><span class="pill bad">连接失败</span></div><div class="alertbanner bad"><span>${esc(s.error)}</span></div></div>`;continue;}
+    const roles=s.roles||[];
+    const catCount=(c)=>roles.filter(r=>cat(r)===c).length;
+    const online=catCount('online');
+    const kicked=catCount('kicked');
+    const dups=catCount('dup');
+    const down=roles.length-online-kicked-dups;
+    const leftovers=s.leftovers||[]; const orphans=s.orphans||[];
+    const panelPill=s.panelListen=='OK'?'<span class="pill ok">面板在线</span>':'<span class="pill bad">面板未监听</span>';
+    html+=`<div class="server">
+      <div class="server-head"><span class="name">${esc(s.name)}</span>${panelPill}
+        <div class="spacer"></div>
+        <button class="btn ghost sm" onclick="restartServer('${s.key}')">重启全部引擎</button></div>
+      <div class="chips">
+        <span class="chip">在线 <b>${online}</b></span>
+        ${kicked?`<span class="chip" style="color:var(--warn);font-weight:700">账号未登录 <b>${kicked}</b></span>`:''}
+        <span class="chip" style="${dups?'color:var(--bad)':''}">重复引擎 <b>${dups}</b></span>
+        <span class="chip">下线 <b>${down}</b></span>
+        <span class="chip">引擎 <b>${roles.reduce((a,r)=>a+(r.engineCount||0),0)}</b></span>
+        ${s.panelUrl?`<span class="chip">面板已通</span>`:''}
+      </div>`;
+    // 语音额度面板（1.5元/万字符；余额用尽 AI 会拒绝发语音）
+    if (s.quota && Object.keys(s.quota).length) {
+      const qrows = (s.roles || []).map((r) => {
+        const q = s.quota[r.name] || { quota: 0, used: 0 };
+        const left = Math.max(0, (Number(q.quota) || 0) - (Number(q.used) || 0));
+        return `<div class="qrow">
+          <span class="qname">${esc(r.name)}</span>
+          <span class="qstat">充 ¥${(Number(q.quota)||0).toFixed(2)} · 用 ¥${(Number(q.used)||0).toFixed(2)} · <b>剩 ¥${left.toFixed(2)}</b></span>
+          <input class="qin" id="qin-${s.key}-${esc(r.name)}" type="number" min="0" step="0.5" value="${Number(q.quota)||0}">
+          <button class="btn ghost sm" onclick="setQuota('${s.key}','${esc(r.name)}')">充值</button>
+        </div>`;
+      }).join('');
+      html += `<div class="glass quota">
+        <div class="card-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 1 6 6c0 2.5-1.5 3.5-2.5 4.5-.8.8-1 1.4-1 2.5h-5c0-1.1-.2-1.7-1-2.5C7.5 12.5 6 11.5 6 9a6 6 0 0 1 6-6z"/></svg>语音额度<small class="sub" style="font-weight:400">（1.5元/万字符，余额用尽后 AI 会发「语音余额不足」拒绝）</small></div>
+        ${qrows}
+      </div>`;
+    }
+    if(leftovers.length)html+=leftovers.map(l=>`<div class="alertbanner warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg><div>检测到 <b>${l.engines.length}</b> 个迁移残留引擎（QQ ${l.qq}），不在本服务器角色清单内，占用内存。</div><div class="btns"><button class="btn ghost sm" onclick="killLeftovers('${s.key}','${l.qq}')">清理</button></div></div>`).join('');
+    if(orphans.length)html+=`<div class="alertbanner bad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg><div><b>${orphans.length}</b> 个孤儿引擎（无角色标识）</div></div>`;
+    html+=`<div class="roles">`;
+    for(const r of roles){
+      if(!PANELS[s.key]){ PANELS[s.key]={}; }
+      const st=stateOf(r); const c=cat(r);
+      const badges=[];
+      if(c==='dup')badges.push('<span class="badge bad">重复引擎</span>');
+      else if(r.engineCount>1)badges.push(`<span class="badge bad">${r.engineCount}个引擎</span>`);
+      if(c==='kicked')badges.push('<span class="badge warn">账号未登录(疑似被踢)</span>');
+      else if(c==='online')badges.push('<span class="badge ok">在线</span>');
+      else if(c==='down')badges.push('<span class="badge dim">引擎未运行</span>');
+      const url=panelOf(s.key,r.name);
+      const owner=(SERVERS.find(x=>x.key===s.key)?.roles||[]).find(ro=>ro.name===r.name);
+      html+=`<div class="rcard">
+        <div class="top"><span class="dot ${st.cls}"></span><span class="nm">${esc(r.name)}</span></div>
+        <div class="meta">QQ ${esc(r.qq)} · 端口 ${r.port||'—'}${owner?' · 主人 '+esc(owner.owner):''}</div>
+        <div class="badges">${badges.join('')||'<span class="badge dim">'+esc(st.txt)+'</span>'}</div>
+        <div class="acts">
+          <button class="btn act-open sm" onclick="openPanel('${url}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>打开面板</button>
+          <button class="btn ghost sm" onclick="restartRole('${s.key}','${r.name}',${r.port})">重启</button>
+        </div>
+      </div>`;
+    }
+    html+=`</div></div>`;
+  }
+  box.innerHTML=html||'<div class="sub">暂无服务器数据</div>';
+}
+function openPanel(url){ if(!url){alert('面板地址暂不可用，请先在服务器启动 cloudflared 隧道');return;} window.open(url,'_blank'); }
+// 设置语音额度（充值金额元）
+async function setQuota(key,name){
+  const inp=document.getElementById('qin-'+key+'-'+name);
+  const yuan=parseFloat(inp.value);
+  if(isNaN(yuan)||yuan<0){alert('请输入有效的充值金额');return;}
+  if(!confirm('给「'+name+'」语音额度充值 ¥'+yuan.toFixed(2)+' ？（不足时 AI 拒绝发语音）'))return;
+  try{
+    const j=await api('/api/quota-set',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({server:key,role:name,yuan})});
+    if(j.ok){ await loadDash(); }
+    else{ alert('设置失败：'+(j.error||'未知')); }
+  }catch(e){ alert('请求失败：'+e.message); }
+}
+
+// ---------- 重启 ----------
+function restartServer(key){ if(!confirm('确定重启该服务器全部引擎？（会断开现有对话）'))return; doRestart(key,null); }
+function restartRole(key,name,port){ if(!confirm(`确定重启「${name}」引擎？`))return; doRestart(key,[{name,port}]); }
+async function doRestart(key,roles){
+  const box=document.getElementById('dash-body');
+  const msg=document.createElement('div');
+  msg.className='glass'; msg.style.marginBottom='16px';
+  msg.innerHTML='<div class="card-h">引擎重启中，请稍候…</div>';
+  box.prepend(msg);
+  try{
+    const j=await api('/api/restart',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({server:key,roles})});
+    msg.innerHTML=`<div class="card-h">重启完成</div><div class="logbox">${esc(j.log||j.error||'')}</div>`;
+  }catch(e){msg.innerHTML=`<div class="card-h">重启失败</div><div class="logbox">${esc(e.message)}</div>`;}
+  await loadDash();
+}
+
+// ---------- 清理残留 ----------
+async function killLeftovers(key,qq){
+  if(!confirm(`确定清理 QQ ${qq} 的残留引擎？（仅杀进程，不影响其它）`))return;
+  const j=await api('/api/restart',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({server:key,cleanLeftoverQQ:String(qq)})});
+  await loadDash();
+}
+
+// ---------- 初始化服务器 ----------
+async function initServers(){
+  const j=await api('/api/servers'); SERVERS=j.servers||[];
+  const sel=document.getElementById('c-server');
+  sel.innerHTML=SERVERS.map(s=>`<option value="${s.key}">${s.name}（${s.roles.length} 个角色）</option>`).join('');
+  // 二维码：选服务器 → 选角色 → 获取
+  const qsrv=document.getElementById('qr-server');
+  qsrv.innerHTML=SERVERS.map(s=>`<option value="${s.key}">${s.name}</option>`).join('');
+  qsrv.onchange=fillQrRoles;
+  document.getElementById('btn-loadqr').onclick=loadQr;
+  fillQrRoles();
+}
+function fillQrRoles(){
+  const key=document.getElementById('qr-server').value;
+  const srv=SERVERS.find(x=>x.key===key);
+  const qr=document.getElementById('qr-role');
+  qr.innerHTML=(srv?srv.roles:[]).map(r=>`<option value="${r.qq}">${esc(r.name)} (${r.qq})</option>`).join('');
+}
+document.getElementById('btn-create').onclick=async()=>{
+  const btn=document.getElementById('btn-create'),msg=document.getElementById('create-msg');
+  const body={server:document.getElementById('c-server').value,name:document.getElementById('c-name').value.trim(),qq:document.getElementById('c-qq').value.trim(),pass:document.getElementById('c-pass').value.trim(),ownerQQ:document.getElementById('c-owner').value.trim(),port:parseInt(document.getElementById('c-port').value,10)||null,model:document.getElementById('c-model').value.trim(),llmKey:document.getElementById('c-llm').value.trim(),voice:document.getElementById('c-voice').value.trim(),persona:document.getElementById('c-persona').value.trim()};
+  if(!body.name||!body.qq){msg.className='msg err';msg.textContent='角色名和 QQ 号必填';return;}
+  btn.disabled=true;msg.className='msg';msg.textContent='';
+  try{const j=await api('/api/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(j.ok){msg.className='msg ok';msg.textContent=`已创建「${j.name}」（${j.serverName||''}，端口 ${j.port}）。面板密码见密码清单，下一步扫码登录。`;}
+    else{msg.className='msg err';msg.textContent='创建失败：'+(j.error||'未知');}
+  }catch(e){msg.className='msg err';msg.textContent='请求失败：'+e.message;}
+  finally{btn.disabled=false;}
+};
+document.getElementById('btn-pass').onclick=async()=>{
+  const box=document.getElementById('pass-body');box.innerHTML='<div class="sub">加载中…</div>';
+  const j=await api('/api/passwords');
+  let h='';for(const s of j.servers||[]){
+    const rows=Object.entries(s.roleTokens||{}).map(([n,p])=>`<tr><td>${esc(n)}</td><td class="mono">${esc(p)}</td></tr>`).join('');
+    h+=`<h3 style="margin:16px 0 8px;font-size:14px">${esc(s.name)}</h3><table><tr><th>角色</th><th>面板密码</th></tr>${rows}</table>`;
+  }
+  box.innerHTML=h;
+};
+async function loadQr(){
+  const key=document.getElementById('qr-server').value, qq=document.getElementById('qr-role').value;
+  const srv=SERVERS.find(x=>x.key===key);const box=document.getElementById('qr-body');
+  const role=(srv?srv.roles:[]).find(r=>String(r.qq)===String(qq));
+  if(!role)return;box.innerHTML='<div class="sub">加载中…</div>';
+  const j=await api('/api/qr?server='+key+'&qq='+role.qq);
+  box.innerHTML=`<div class="qr-card"><div class="nm">${esc(role.name)}（${esc(role.qq)}）</div>${j.ok?`<img class="qr" src="data:image/png;base64,${j.qrBase64}"><div class="sub" style="margin-top:6px">${esc(j.mtime)}</div>`:`<div class="sub">${esc(j.error)}</div>`}</div>`;
+}
+document.getElementById('global-refresh').onclick=()=>{loadPanels().then(loadDash);};
+
+// 启动
+(async()=>{ await initServers(); await loadPanels(); await loadDash(); })();
+</script>
+</body>
+</html>
